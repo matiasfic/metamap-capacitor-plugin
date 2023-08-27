@@ -27,51 +27,50 @@ public class MetaMapCapacitorPlugin extends Plugin {
     @PluginMethod
     public void showMetaMapFlow(PluginCall call) {
         Log.e("MetaMapCapacitorPlugin", "showMetaMapFlow");
-        bridge.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        bridge.getActivity().runOnUiThread(() -> {
 
-                final String clientId = call.getString("clientId");
-                final String flowId = call.getString("flowId");
-                final JSONObject metadata = call.getObject("metadata", new JSObject());
-                try {
-                    if (clientId == null) {
-                        Log.e("MetaMapCapacitorPlugin", "\"Client Id should be not null\"");
-                    } else {
-
-                        Iterator<String> keys = metadata.keys();
-
-                        Metadata.Builder metadataBuilder = new Metadata.Builder();
-
-                        while (keys.hasNext()) {
-                            String key = keys.next();
-                            try {
-                                if (key.toLowerCase().contains("color")) {
-                                    String hexColor = (String) metadata.get(key);
-                                    int color = Color.parseColor(hexColor);
-                                    if (hexColor.length() == 9) {
-                                        color = Color.argb(Color.blue(color), Color.alpha(color), Color.red(color), Color.green(color));
-                                    }
-                                    metadataBuilder.with(key, color);
-                                } else {
-                                    metadataBuilder.with(key, metadata.get(key));
-                                }
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                        metadataBuilder.with("sdkType", "capacitor");
-                        Metadata data = metadataBuilder.build();
-
-
-
-
-                        Intent flowIntent = MetamapSdk.INSTANCE.createFlowIntent(bridge.getActivity(), clientId, flowId, data, null, null);
-                        startActivityForResult(call, flowIntent, "callback");
-                    }
-                } catch(Exception excepion) {
-                    call.reject("Verification failed");
+            final String clientId = call.getString("clientId");
+            final String flowId = call.getString("flowId");
+            JSONObject metadata = call.getObject("metadata", new JSObject());
+            try {
+                if (clientId == null) {
+                    Log.e("MetaMapCapacitorPlugin", "\"Client Id should be not null\"");
+                    return;
                 }
+
+                if (metadata == null) {
+                    Log.e("MetaMapCapacitorPlugin", "\"metadata should be not null\"");
+                    return;
+                }
+
+                Iterator<String> keys = metadata.keys();
+
+                Metadata.Builder metadataBuilder = new Metadata.Builder();
+
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    try {
+                        if (key.toLowerCase().contains("color")) {
+                            String hexColor = (String) metadata.get(key);
+                            int color = Color.parseColor(hexColor);
+                            if (hexColor.length() == 9) {
+                                color = Color.argb(Color.blue(color), Color.alpha(color), Color.red(color), Color.green(color));
+                            }
+                            metadataBuilder.with(key, color);
+                        } else {
+                            metadataBuilder.with(key, metadata.get(key));
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                metadataBuilder.with("sdkType", "capacitor");
+                Metadata data = metadataBuilder.build();
+                Intent flowIntent = MetamapSdk.INSTANCE.createFlowIntent(bridge.getActivity(), clientId, flowId, data, null, null);
+                startActivityForResult(call, flowIntent, "callback");
+
+            } catch(Exception exception) {
+                call.reject("Verification failed");
             }
         });
     }
