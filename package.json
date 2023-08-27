@@ -41,7 +41,7 @@
     "dist/",
     "ios/",
     "android/",
-    "MetamapCapacitorPlugin.podspec"
+    "MatiasficMetamapCapacitorPlugin.podspec"
   ],
   "keywords": [
     "capacitor",
