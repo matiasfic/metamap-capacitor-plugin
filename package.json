@@ -1,5 +1,5 @@
 {
-  "name": "metamap-capacitor-plugin",
+  "name": "@matiasfic/metamap-capacitor-plugin",
   "version": "4.1.0",
   "description": "Capacitor plugin for MetaMapSDK",
   "main": "dist/plugin.js",
@@ -17,7 +17,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "author": "Avo Sukiasyan",
+  "author": "Matias Ficarrotti",
   "license": "MIT",
   "devDependencies": {
     "@capacitor/android": "^4.0.0",
@@ -60,11 +60,11 @@
   "swiftlint": "@ionic/swiftlint-config",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GetMetaMap/mati-capacitor-plugin"
+    "url": "https://github.com/matiasfic/metamap-capacitor-plugin"
   },
   "bugs": {
-    "url": "https://github.com/GetMetaMap/mati-capacitor-plugin/issues"
+    "url": "https://github.com/matiasfic/metamap-capacitor-plugin/issues"
   },
-  "homepage": "https://github.com/GetMetaMap/mati-capacitor-plugin/blob/main/docs/mati-capacitor.md",
+  "homepage": "https://github.com/matiasfic/metamap-capacitor-plugin/blob/main/docs/metaMap-capacitor.md",
   "dependencies": {}
 }
