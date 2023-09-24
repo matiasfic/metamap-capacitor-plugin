@@ -26,7 +26,7 @@ public class MetaMapCapacitorPlugin extends Plugin {
     @SuppressWarnings("unused")
     @PluginMethod
     public void showMetaMapFlow(PluginCall call) {
-        Log.e("MetaMapCapacitorPlugin", "showMetaMapFlow");
+        Log.i("MetaMapCapacitorPlugin", "showMetaMapFlow");
         bridge.getActivity().runOnUiThread(() -> {
 
             final String clientId = call.getString("clientId");
@@ -68,8 +68,8 @@ public class MetaMapCapacitorPlugin extends Plugin {
                 Metadata data = metadataBuilder.build();
                 Intent flowIntent = MetamapSdk.INSTANCE.createFlowIntent(bridge.getActivity(), clientId, flowId, data, null, null);
                 startActivityForResult(call, flowIntent, "callback");
-
-            } catch(Exception exception) {
+            } catch (Exception exception) {
+                Log.e("MetaMapCapacitorPlugin", "Verification error" + exception.getMessage());
                 call.reject("Verification failed");
             }
         });
@@ -78,13 +78,13 @@ public class MetaMapCapacitorPlugin extends Plugin {
     @Override
     protected void handleOnActivityResult(int requestCode, int resultCode, Intent data) {
         super.handleOnActivityResult(requestCode, resultCode, data);
-        Log.e("MetaMapCapacitorPlugin", "WILL NOT BE CALLED");
+        Log.w("MetaMapCapacitorPlugin", "WILL NOT BE CALLED");
     }
 
     @SuppressWarnings("unused")
     @ActivityCallback
     public void callback(PluginCall call, ActivityResult activityResult) {
-        if(activityResult.getResultCode() == Activity.RESULT_OK && activityResult.getData() != null) {
+        if (activityResult.getResultCode() == Activity.RESULT_OK && activityResult.getData() != null) {
             JSObject result = new JSObject();
             String identityId = activityResult.getData().getStringExtra(MetamapSdk.ARG_IDENTITY_ID);
             String verificationID = activityResult.getData().getStringExtra(MetamapSdk.ARG_VERIFICATION_ID);
