@@ -2,70 +2,92 @@ package com.getmati.plugins.capacitor;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
+
 import androidx.activity.result.ActivityResult;
+
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
-import com.metamap.metamap_sdk.MetamapSdk;
 import com.metamap.metamap_sdk.Metadata;
+import com.metamap.metamap_sdk.MetamapSdk;
+import com.metamap.metamap_sdk.metadata.FontConfig;
+import com.metamap.metamap_sdk.metadata.MetamapLanguage;
+import com.metamap.metamap_sdk.metadata.UIConfig;
+
 import org.json.JSONObject;
-import org.json.JSONException;
 
-
+import java.util.Arrays;
 import java.util.Iterator;
-
-import android.graphics.Color;
+import java.util.List;
 
 @CapacitorPlugin(name = "MetaMapCapacitor")
 public class MetaMapCapacitorPlugin extends Plugin {
+
+    private List<String> configValues = Arrays.asList("identityId", "fixedLanguage", "buttonColor", "buttonTextColor", "fontConfig");
 
     @SuppressWarnings("unused")
     @PluginMethod
     public void showMetaMapFlow(PluginCall call) {
         Log.i("MetaMapCapacitorPlugin", "showMetaMapFlow");
         bridge.getActivity().runOnUiThread(() -> {
-
             final String clientId = call.getString("clientId");
+            if (clientId == null) {
+                Log.e("MetaMapCapacitorPlugin", "clientId should be not null");
+                return;
+            }
+
             final String flowId = call.getString("flowId");
+            if (flowId == null) {
+                Log.e("MetaMapCapacitorPlugin", "flowId should be not null");
+                return;
+            }
+
             JSONObject metadata = call.getObject("metadata", new JSObject());
+            if (metadata == null) {
+                Log.e("MetaMapCapacitorPlugin", "metadata should be not null");
+                return;
+            }
+
             try {
-                if (clientId == null) {
-                    Log.e("MetaMapCapacitorPlugin", "\"Client Id should be not null\"");
-                    return;
-                }
-
-                if (metadata == null) {
-                    Log.e("MetaMapCapacitorPlugin", "\"metadata should be not null\"");
-                    return;
-                }
-
                 Iterator<String> keys = metadata.keys();
-
                 Metadata.Builder metadataBuilder = new Metadata.Builder();
+
+                if (metadata.has("identityId")) {
+                    metadataBuilder.identityId(metadata.getString("identityId"));
+                }
+
+                Integer buttonColor = null;
+                if (metadata.has("buttonColor")) {
+                    buttonColor = Color.parseColor(metadata.getString("buttonColor"));
+                }
+
+                Integer buttonTextColor = null;
+                if (metadata.has("buttonTextColor")) {
+                    buttonTextColor = Color.parseColor(metadata.getString("buttonTextColor"));
+                }
+
+                FontConfig fontConfig = new FontConfig("proxima_nova_regular.ttf", "proxima_nova_bold.ttf");
+
+                UIConfig uiConfig = new UIConfig(MetamapLanguage.SPANISH, buttonColor, buttonTextColor, fontConfig);
+                metadataBuilder.uiConfig(uiConfig);
+
+                metadataBuilder.additionalData("sdkType", "capacitor");
 
                 while (keys.hasNext()) {
                     String key = keys.next();
-                    try {
-                        if (key.toLowerCase().contains("color")) {
-                            String hexColor = (String) metadata.get(key);
-                            int color = Color.parseColor(hexColor);
-                            if (hexColor.length() == 9) {
-                                color = Color.argb(Color.blue(color), Color.alpha(color), Color.red(color), Color.green(color));
-                            }
-                            metadataBuilder.with(key, color);
-                        } else {
-                            metadataBuilder.with(key, metadata.get(key));
-                        }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
+                    if (!configValues.contains(key)) {
+                        metadataBuilder.additionalData(key, metadata.get(key));
                     }
                 }
-                metadataBuilder.with("sdkType", "capacitor");
+
                 Metadata data = metadataBuilder.build();
+                Log.i("MetaMapCapacitorPlugin", "metadata: " + data.getDataJson());
+
                 Intent flowIntent = MetamapSdk.INSTANCE.createFlowIntent(bridge.getActivity(), clientId, flowId, data, null, null);
                 startActivityForResult(call, flowIntent, "callback");
             } catch (Exception exception) {
