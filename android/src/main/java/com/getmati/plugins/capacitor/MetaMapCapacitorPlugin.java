@@ -86,12 +86,12 @@ public class MetaMapCapacitorPlugin extends Plugin {
     public void callback(PluginCall call, ActivityResult activityResult) {
         if(activityResult.getResultCode() == Activity.RESULT_OK && activityResult.getData() != null) {
             JSObject result = new JSObject();
-            String identityId = activityResult.getData().getStringExtra("ARG_IDENTITY_ID");
-            String verificationID = activityResult.getData().getStringExtra("ARG_VERIFICATION_ID");
+            String identityId = activityResult.getData().getStringExtra(MetamapSdk.ARG_IDENTITY_ID);
+            String verificationID = activityResult.getData().getStringExtra(MetamapSdk.ARG_VERIFICATION_ID);
             result.put("identityId", identityId);
             result.put("verificationID", verificationID);
             call.resolve(result);
-            Log.e("MetaMapCapacitorPlugin", "Activity.RESULT_OK");
+            Log.i("MetaMapCapacitorPlugin", "Activity.RESULT_OK");
         } else {
             call.reject("verificationCancelled");
             Log.e("MetaMapCapacitorPlugin", "Activity.RESULT_CANCELLED");
