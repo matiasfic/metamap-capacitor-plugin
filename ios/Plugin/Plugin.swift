@@ -9,12 +9,13 @@ import MetaMapSDK
 @objc(MetaMapCapacitorPlugin)
 public class MetaMapCapacitorPlugin: CAPPlugin {
 
-    var output:  CAPPluginCall?
+    var output: CAPPluginCall?
     @objc func showMetaMapFlow(_ call: CAPPluginCall) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             var metadata = call.getObject("metadata") ?? [:]
             metadata["sdk_type"] = "capacitor"
+            metadata["shimmerBackgroundColor"] = "#222222"
             MetaMap.shared.showMetaMapFlow(clientId: call.getString("clientId") ?? "",
                                     flowId: call.getString("flowId") ?? "",
                                     metadata: metadata)
