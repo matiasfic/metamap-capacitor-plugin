@@ -61,27 +61,23 @@ public class MetaMapCapacitorPlugin extends Plugin {
                     metadataBuilder.identityId(metadata.getString("identityId"));
                 }
 
-                Integer primaryColor = Color.parseColor("#FDC000");
-                Integer whiteColor = Color.parseColor("#FFFFFF");
-                Integer blackColor = Color.parseColor("#000000");
-                Integer greyColor = Color.parseColor("#222222");
-                Integer redColor = Color.parseColor("#FF0000");
+                int primaryColor = Color.parseColor("#FDC000");
+                int whiteColor = Color.parseColor("#FFFFFF");
+                int greyColor = Color.parseColor("#222222");
 
                 FontConfig fontConfig = new FontConfig("proxima_nova_regular.ttf", "proxima_nova_bold.ttf");
 
-                UIConfig uiConfig = new UIConfig(
-                        MetamapLanguage.SPANISH,
-                        null,
-                        null,
-                        primaryColor,
-                        whiteColor,
-                        whiteColor,
-                        greyColor,
-                        whiteColor,
-                        fontConfig
-                );
-                metadataBuilder.uiConfig(uiConfig);
+                UIConfig uiConfig = new UIConfig.Builder()
+                        .titleTextColor(whiteColor)
+                        .subtitleTextColor(whiteColor)
+                        .accentColor(primaryColor)
+                        .backgroundColor(greyColor)
+                        .lineColor(greyColor)
+                        .fixedLanguage(MetamapLanguage.SPANISH)
+                        .fontConfig(fontConfig)
+                        .build();
 
+                metadataBuilder.uiConfig(uiConfig);
                 metadataBuilder.additionalData("sdkType", "capacitor");
 
                 while (keys.hasNext()) {
