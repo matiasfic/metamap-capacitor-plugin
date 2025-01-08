@@ -19,10 +19,10 @@ apply plugin: 'com.android.library'
 
 android {
     namespace "io.mati.plugins.capacitor.maticapacitorplugin"
-    compileSdkVersion 32
+    compileSdkVersion 34
     defaultConfig {
         minSdkVersion 22
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -45,14 +45,16 @@ android {
 repositories {
     google()
     mavenCentral()
+    maven { url "https://jitpack.io" }
 }
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':capacitor-android')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
-    implementation ('com.metamap:android-sdk:3.42.1')
+    implementation ('com.metamap:android-sdk:3.42.4') {
+        exclude group: "com.airbnb.android", module: "lottie-compose"
+    }
 }
 
 
