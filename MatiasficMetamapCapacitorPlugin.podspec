@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.source_files = 'ios/Plugin/**/*.{swift,h,m,c,cc,mm,cpp}' # Source files for Capacitor plugin
   s.ios.deployment_target  = '13.0'
   s.dependency 'Capacitor'
-  s.dependency 'MetaMapSDK', '3.22.4'
+  s.dependency 'MetaMapSDK', '3.22.5'
   s.static_framework = true # Use static framework to support dependencies like Incode SDK
   s.swift_version = '5.1'
 end
